@@ -6,6 +6,8 @@ typedef struct {
    double imag;
 } complex_t;
 
+void to_string(complex_t c);
+
 complex_t c_add(complex_t a, complex_t b);
 complex_t c_sub(complex_t a, complex_t b);
 complex_t c_mul(complex_t a, complex_t b);

@@ -3,48 +3,32 @@
 #include <ctype.h>
 #include <string.h>
 
-void strip_whitespace(const char* num, size_t length, size_t* left, size_t* right) {
-    *left = 0;
-    while (*left < length && isspace(num[*left])) {
-        (*left)++;
-    }
-
-    *right = length - 1;
-    while (*right < length && isspace(num[*right])) {
-        (*right)--;
-    }
-}
-
 bool luhn(const char* num) {
     size_t length = strlen(num);
-    if (length <= 1) return false;
+    if (length < 2) return false;
 
-    size_t left, right;
-    strip_whitespace(num, length, &left, &right);
-    if (left == length) {
-        return false;
-    }
+    bool doubleit = false;
+    int total_sum = 0;
+    int valid_digit_count = 0;
 
-    int sum = 0;
-    int skip = false;
-    while (left <= right) {
-        char ch = num[left];
-        left++;
-        if (isdigit(ch) == 1) return false;
-        if (isspace(ch)) continue;
-
-        int digit = (int)ch - 48;
-
-        if (!skip) {
-            digit = digit * 2;
-            if (digit > 9) {
-                digit = 12 - digit;
-            }
+    for (size_t i = length - 1; i < length; i--) {
+        char ch = num[i];
+        if (ch == ' ') {
+            continue;
         }
-        sum += digit;
-        skip = !skip;
+        else if (!isdigit(ch)) {
+            return false;
+        }
+        else {
+            int digit = (int)ch - 48;
+            if (doubleit) digit = digit * 2;
+            if (digit > 9) digit = digit - 9;
 
+            total_sum += digit;
+            doubleit = !doubleit;
+            valid_digit_count++;
+        }
     }
 
-    return sum % 10 == 0;
+    return valid_digit_count > 1 && total_sum % 10 == 0;
 }
